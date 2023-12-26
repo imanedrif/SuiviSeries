@@ -11,8 +11,8 @@ const Home = () => {
   // fetch data from Api
 
   return (
-    <div className='flex flex-col items-center justify-center mt-24 gap-8'>
-      <div className='flex flex-row gap-4 items-center'>
+    <div className=' container m-auto flex flex-col items-center justify-center mt-24 gap-8'>
+      <div className='flex flex-row gap-4 items-center z-[1]'>
         <h2 className='text-white text-2xl font-medium'>Liste séries</h2>
         <div className='bg-slate-50 xl:w-[910px] md:w-[400px] md-auto h-[1px]'></div>
         <PrimaryButtonsIcon text='Filtre' iconRight={FilterIcon} />
