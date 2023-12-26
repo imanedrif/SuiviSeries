@@ -5,10 +5,10 @@ import { Footer } from './Aseests/Footer'
 
 const App = () => {
   return (
-    <div className="font-poppins bg-body min-h-screen flex flex-col">
-      <Navbar/>
-      <Home/>
-      <Footer/>
+    <div className="font-poppins bg-body min-h-screen flex flex-col p-4 relative">
+    <Navbar />
+    <Home />
+    <Footer />
     </div>
   )
 }
