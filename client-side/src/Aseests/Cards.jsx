@@ -6,7 +6,7 @@ export const Card = (props) => {
   const [isHovered, setIsHovered] = useState(false)
   
   return (
-    <div className=" relative rounded-lg w-64 h-96 " style={{
+    <div className=" relative rounded-lg w-80 h-[500px] " style={{
       background: `url(${props.image})`,
       backgroundRepeat: "no-repeat",
       backgroundSize: 'cover'
@@ -43,7 +43,7 @@ export const HoveredCard = (props) => {
         <div className='flex flex-col items-start gap-10'>
           <p className=' font-light text-justify text-sm'>{props.description}</p>
           <div className='flex flex-row  gap-3 items-baseline bottom-3 absolute'>
-            <div className=' bg-slate-300 w-52 h-[1px]'></div>
+            <div className=' bg-slate-300 w-64 h-[1px]'></div>
             {isClicked ? 
             <img src={FilledHeart} alt="" onClick={()=>SetIsclicked(false)} className=' cursor-pointer h-5'/>
             :

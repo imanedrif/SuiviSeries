@@ -18,7 +18,7 @@ const Home = () => {
         <PrimaryButtonsIcon text='Filtre' iconRight={FilterIcon} />
       </div>
       <div className='relative'>
-        <div className='relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-5 z-10'>
+        <div className='relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 z-10'>
           <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
           <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
           <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
@@ -33,7 +33,6 @@ const Home = () => {
         {/* Background overlay with absolute positioning */}
         <div className="absolute inset-0 z-0 bg-gradient-to-r from-indigo-900 via-purple-800 to-indigo-900 opacity-75 filter blur-3xl"></div>
       </div>
-
       <div className='flex gap-7'>
         <img src={Left} alt="" />
         <img src={Right} alt="" />
