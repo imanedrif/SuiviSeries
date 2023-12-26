@@ -1,15 +1,20 @@
 import React from 'react'
 import logo from '../data/Suivi.Series.logo.svg'
 import {PrimaryButtons, SecondaryButtons} from './Buttons'
+import { Link } from 'react-router-dom'
 const Navbar = () => {
   return (
     <div className=' flex flex-row justify-between items-center'>
-        <div className="logo">
+        <Link to="/">
             <img src={logo} alt="" />
-        </div>
+        </Link>
         <div className='flex flex-row gap-2'>
-            <SecondaryButtons text="S'inscrire"/>
-            <PrimaryButtons text='Se connecter'/>
+            <Link to="connecter">
+              <SecondaryButtons text="S'inscrire"/>
+            </Link>
+            <Link to="inscrire">
+              <PrimaryButtons text='Se connecter'/>
+            </Link>
         </div>
     </div>
   )
