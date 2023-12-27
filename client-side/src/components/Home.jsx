@@ -5,10 +5,17 @@ import { Card } from '../Aseests/Cards'
 import serie from '../data/serie2.jpg'
 import Left from '../data/ChevronLeftOutline.svg'
 import Right from '../data/ChevronRightOutline.svg'
+import axios from 'axios'
 
 const Home = () => {
 
   // fetch data from Api
+  try {
+    const ApiKey = "5bf89b1ac4dec1f2a3dacb6b4b926527"
+    
+  }
+
+
 
   return (
     <div className='flex flex-col items-center justify-center mt-24 gap-8'>
