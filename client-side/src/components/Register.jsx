@@ -28,7 +28,7 @@ const Register = () => {
           <div className='-mt-4'>
             <span className=' font-thin opacity-60'>si vous avez déjà un compte veuillez </span>
             <Link to="/connecter">
-              <span className='text-red font-bold'>se connecter</span>
+              <span className='text-red font-bold'></span>
             </Link>
           </div>
           <PrimaryButtons text="S'inscrire" />

@@ -23,7 +23,7 @@ const Login = () => {
         <div className='-mt-4'>
           <span className=' font-thin opacity-60'>si vous n’avez pas un compte veuillez </span>
           <Link to="/inscrire">
-            <span className='text-red font-bold'>s’inscrire</span>
+            <span className='text-red font-bold'>s’inscrire </span>
           </Link>
         </div>
         <PrimaryButtons text="Se connecter" />
