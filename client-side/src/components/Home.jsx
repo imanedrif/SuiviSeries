@@ -9,26 +9,8 @@ import axios from 'axios'
 
 const Home = () => {
 
-const [series,setSeries]=useState([]);
+  // fetch data from Api
 
-useEffect(()=>{
-  getTrendingSerieData()
-},[]);
-
-async function getTrendingSerieData(){
-  try {
-    // const ApiKey = "5bf89b1ac4dec1f2a3dacb6b4b926527"
-    let resp=await axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=5bf89b1ac4dec1f2a3dacb6b4b926527`)
-    /*console.log(resp.data.results);*/
-    setSeries(resp.data.results);
-    console.log(series)
-  }catch(e){
-    console.log(e)
-  }finally{
-
-  }
-}
-  
   return (
     <div className=' container m-auto flex flex-col items-center justify-center mt-24 gap-8'>
       <div className='flex flex-row gap-4 items-center z-[1]'>
@@ -38,16 +20,23 @@ async function getTrendingSerieData(){
       </div>
       <div className='relative'>
         <div className='relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 z-10'>
-            {series.map((serie,i)=>(
-              <Card image={serie.backdrop_path} date={series.first_air_date} />
-            ))}
+          <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
+          <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
+          <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
+          <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
+          <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
+          <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
+          <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
+          <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
+          <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
+          <Card image={serie} releaseDate="2023-01-01" rating={5} description="Your card description here..." />
         </div>
         {/* Background overlay with absolute positioning */}
         <div className="absolute inset-0 z-0 bg-gradient-to-r from-indigo-900 via-purple-800 to-indigo-900 opacity-75 filter blur-3xl"></div>
       </div>
       <div className='flex gap-7'>
         <img src={Left} alt="" />
-        <img src={Right} alt="" />
+        <img src={Right} alt="" className='cursor-pointer' />
       </div>
     </div>
   )

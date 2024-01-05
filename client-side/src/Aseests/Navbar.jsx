@@ -4,10 +4,10 @@ import {PrimaryButtons, SecondaryButtons} from './Buttons'
 import { Link } from 'react-router-dom'
 const Navbar = () => {
   return (
-    <div className=' container m-auto flex flex-row justify-between items-center pt-4 z-[1] '>
+    <div className='container m-auto flex flex-col md:flex-row justify-between items-center px-2 gap-8  pt-4 z-[1] '>
         <Link to="/">
             <img src={logo} alt="" />
-        </Link>
+        </Link>  
         <div className='flex flex-row gap-4 items-center'>
             <Link to="inscrire">
               <SecondaryButtons text="S'inscrire"/>

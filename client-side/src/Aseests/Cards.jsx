@@ -1,25 +1,10 @@
 import React, { useState } from 'react'
 import Heart from '../data/heartIcon.svg'
 import FilledHeart from '../data/heartFilled.svg'
+import { Navigate } from 'react-router-dom'
 
 export const Card = (props) => {
-  const [isHovered, setIsHovered] = useState(false)
-  
-  return (
-    <div className=" relative rounded-lg w-80 h-[500px] border border-indigo-500" style={{
-      background: `url(${props.image})`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: 'cover'
-    }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {isHovered && <HoveredCard {...props} />}
-    </div>
-  )
-}
-
-export const HoveredCard = (props) => {
+  // const [isHovered, setIsHovered] = useState(false)
   const [isClicked,SetIsclicked] = useState(false)
 
   const handleClick = ()=>{
@@ -27,8 +12,18 @@ export const HoveredCard = (props) => {
     
     // add to favories traitement
   }
+  
   return (
-    <div className='inset-0 absolute bg-black bg-opacity-40 text-white rounded-lg'>
+    <div className="relative rounded-lg w-80 h-[500px] border border-indigo-500 group hover:cursor-pointer" style={{
+      background: `url(${props.image})`,
+      backgroundRepeat: "no-repeat",
+      backgroundSize: 'cover'
+    }}
+    onClick={()=>{
+    window.open(`/serie/${props.id}`,'_self')
+    }}
+    >
+      <div className='inset-0 absolute hidden group-hover:block bg-black bg-opacity-40 text-white rounded-lg'>
       <div className=' py-2 px-2 flex flex-col items-start gap-16'>
         <div className='flex flex-col items-start gap-1'>
           <button className='rounded-full font-bold bg-white bg-opacity-15 py-2 px-4'>{props.releaseDate}</button>
@@ -52,6 +47,7 @@ export const HoveredCard = (props) => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   )
 }
