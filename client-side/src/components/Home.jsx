@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { PrimaryButtonsIcon } from "../Aseests/Buttons";
 import FilterIcon from "../data/filtre-icon.svg";
 import { Card } from "../Aseests/Cards";
@@ -16,15 +16,25 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./ui/pagination";
 
 const Home = () => {
   const [series, setSeries] = useState([]);
   const [filter, setFilter] = React.useState("popular");
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     // getTrendingSerieData();
     getFilteredSerieData();
-  }, [filter]);
+  }, [filter, page]);
 
   async function getTrendingSerieData() {
     try {
@@ -42,12 +52,21 @@ const Home = () => {
   }
   async function getFilteredSerieData() {
     try {
-      let resp = await axios.get(`https://api.themoviedb.org/3/tv/${filter}?api_key=5bf89b1ac4dec1f2a3dacb6b4b926527`);
+      let resp = await axios.get(
+        `https://api.themoviedb.org/3/tv/${filter}?api_key=5bf89b1ac4dec1f2a3dacb6b4b926527&page=${page}`
+      );
       setSeries(resp.data.results);
     } catch (e) {
       console.log(e);
     }
   }
+  const handleNext = useCallback(() => {
+    setPage((prevPage) => prevPage + 1);
+  }, []);
+
+  const handlePrevious = useCallback(() => {
+    setPage((prevPage) => Math.max(prevPage - 1, 1));
+  }, []);
 
   return (
     <div className=" container m-auto flex flex-col items-center justify-center mt-24 gap-8">
@@ -63,22 +82,21 @@ const Home = () => {
             {/* <DropdownMenuLabel>Panel Position</DropdownMenuLabel> */}
             <DropdownMenuSeparator />
             <DropdownMenuRadioGroup value={filter} onValueChange={setFilter}>
-          <DropdownMenuRadioItem value="top_rated">
-            Mieux classées
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="airing_today">
-            Dérnieres sorties
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="favorites">
-            Favories
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
+              <DropdownMenuRadioItem value="top_rated">
+                Mieux classées
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="airing_today">
+                Dérnieres sorties
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="favorites">
+                Favories
+              </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
       <div className="relative">
         <div className="relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 z-10">
-
           {series.map((serie, i) => (
             <Card serie={serie} />
           ))}
@@ -87,8 +105,22 @@ const Home = () => {
         <div className="absolute inset-0 z-0 bg-gradient-to-r from-indigo-900 via-purple-800 to-indigo-900 opacity-75 filter blur-3xl"></div>
       </div>
       <div className="flex gap-7">
-        <img src={Left} alt="" />
-        <img src={Right} alt="" />
+        <Pagination className="text-white cursor-pointer">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious onClick={handlePrevious} />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink>{page}</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext onClick={handleNext} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );

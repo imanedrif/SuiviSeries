@@ -4,13 +4,14 @@ import { useParams } from "react-router-dom";
 import { SecondaryButtons } from "../Aseests/Buttons";
 import Check from "../data/CheckCircle.svg";
 import axios from "axios";
-import { Icon } from '@iconify/react';
-
+import { Icon } from "@iconify/react";
+import { HeartIcon, HeartFilledIcon } from "@radix-ui/react-icons";
 
 const DetailSerie = () => {
   const { id } = useParams();
   const [details, setDetails] = useState(null);
   const [Eps, setEps] = useState([]);
+  const [isClicked, SetIsclicked] = useState(false);
 
   // console.log(id)
   // fetch('wwwjojoojoj/id').then((res)=>{
@@ -27,6 +28,9 @@ const DetailSerie = () => {
       console.log(e);
     }
   }
+  const handleClick = () => {
+    SetIsclicked(true);
+  };
 
   const getSeasonEPS = async (season) => {
     try {
@@ -42,9 +46,7 @@ const DetailSerie = () => {
   useEffect(() => {
     getSerieDetails();
     getSeasonEPS(1);
-
   }, []);
-
 
   // console.log(process.env.REACT_APP_IMAGES_URL)
   return (
@@ -60,6 +62,17 @@ const DetailSerie = () => {
             <div className="flex flex-col gap-1 md:flex-row items-center md:gap-4">
               <h1 className=" text-4xl font-bold">{details?.name}</h1>
               <div className="border w-full"></div>
+              {isClicked ? (
+                <HeartFilledIcon
+                  className="h-12 w-12 rounded-full cursor-pointer"
+                  onClick={() => SetIsclicked(false)}
+                />
+              ) : (
+                <HeartIcon
+                  className="h-12 w-12 cursor-pointer"
+                  onClick={handleClick}
+                />
+              )}
             </div>
             <div className="flex flex-row items-center justify-center md:justify-start gap-10 md:gap-10">
               <h3 className=" font-light">
@@ -115,10 +128,14 @@ const DetailSerie = () => {
         {Eps.map((ep) => {
           return (
             <div className=" flex  cursor-pointer flex-col px-6 py-3 items-center justify-start bg-purple-900 bg-opacity-20 border-2 border-purple-900 rounded-md">
-              <span className="font-bold text-lg">EP {ep.episode_number}</span>
+              <span className="font-bold text-lg">EP{ep.episode_number}</span>
               {/* make me arounded checkbox */}
-              <Icon icon="ri:checkbox-circle-fill" className="fill-yellow-500 h-6 w-6" color="yellow"  />
-              <Icon icon="ri:checkbox-circle-line" className="h-6 w-6" />
+              <Icon
+                icon="ri:checkbox-circle-fill"
+                className=" h-7 w-7 fill-green-700"
+                color="green"
+              />
+              {/* <Icon icon="ri:checkbox-circle-line" className="h-6 w-6" /> */}
             </div>
           );
         })}
