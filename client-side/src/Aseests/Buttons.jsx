@@ -10,7 +10,7 @@ export const PrimaryButtons = (props) => {
 };
 export const PrimaryButtonsIcon = (props) => {
   return (
-    <button className='text-white px-6 py-1 bg-red flex justify-center text-lg rounded-md items-center gap-2'>
+    <button className='text-white px-6 py-1 bg-red flex justify-center text-lg rounded-md items-center gap-2' {...props}>
       {props.text}
       <img className='bg-red' src={props.iconRight} alt="" />
     </button>
