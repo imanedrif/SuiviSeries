@@ -12,6 +12,14 @@ const DetailSerie = () => {
   const [details, setDetails] = useState(null);
   const [Eps, setEps] = useState([]);
   const [isClicked, SetIsclicked] = useState(false);
+  const [checkedEps, setCheckedEps] = useState({});
+
+  const handleCheck = (epNumber) => {
+    setCheckedEps((prev) => ({
+      ...prev,
+      [epNumber]: !prev[epNumber],
+    }));
+  };
 
   // console.log(id)
   // fetch('wwwjojoojoj/id').then((res)=>{
@@ -129,13 +137,16 @@ const DetailSerie = () => {
           return (
             <div className=" flex  cursor-pointer flex-col px-6 py-3 items-center justify-start bg-purple-900 bg-opacity-20 border-2 border-purple-900 rounded-md">
               <span className="font-bold text-lg">EP{ep.episode_number}</span>
-              {/* make me arounded checkbox */}
               <Icon
-                icon="ri:checkbox-circle-fill"
-                className=" h-7 w-7 fill-green-700"
-                color="green"
+                icon={
+                  checkedEps[ep.episode_number]
+                    ? "ri:checkbox-circle-fill"
+                    : "ri:checkbox-circle-line"
+                }
+                className="h-7 w-7"
+                color={checkedEps[ep.episode_number] ? "green" : "white"}
+                onClick={() => handleCheck(ep.episode_number)}
               />
-              {/* <Icon icon="ri:checkbox-circle-line" className="h-6 w-6" /> */}
             </div>
           );
         })}
