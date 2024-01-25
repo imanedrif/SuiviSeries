@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import serie from "../data/serie2.jpg";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { SecondaryButtons } from "../Aseests/Buttons";
 import Check from "../data/CheckCircle.svg";
 import axios from "axios";
@@ -13,6 +13,7 @@ const DetailSerie = () => {
   const [Eps, setEps] = useState([]);
   const [isClicked, SetIsclicked] = useState(false);
   const [checkedEps, setCheckedEps] = useState({});
+  const [recommendations, setRecommendations] = useState([]);
 
   const handleCheck = (epNumber) => {
     setCheckedEps((prev) => ({
@@ -20,11 +21,17 @@ const DetailSerie = () => {
       [epNumber]: !prev[epNumber],
     }));
   };
-
-  // console.log(id)
-  // fetch('wwwjojoojoj/id').then((res)=>{
-  //   setDetails(res.data)
-  // })
+  async function getSerieRecommendations() {
+    try {
+      let resp = await axios.get(
+        `https://api.themoviedb.org/3/tv/${id}/recommendations?api_key=5bf89b1ac4dec1f2a3dacb6b4b926527`
+      );
+      setRecommendations(resp.data.results);
+      console.log("recom", resp.data.results);
+    } catch (e) {
+      console.log(e);
+    }
+  }
   async function getSerieDetails() {
     try {
       let resp = await axios.get(
@@ -54,6 +61,7 @@ const DetailSerie = () => {
   useEffect(() => {
     getSerieDetails();
     getSeasonEPS(1);
+    getSerieRecommendations();
   }, []);
 
   // console.log(process.env.REACT_APP_IMAGES_URL)
@@ -150,6 +158,30 @@ const DetailSerie = () => {
             </div>
           );
         })}
+      </div>
+      <div className=" flex flex-col gap-8 bg-zinc-300 bg-opacity-10 container m-auto p-6 items-start justify-start rounded-lg">
+        <h1 className="text-3xl font-bold">Recommendations</h1>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+          {recommendations &&
+            recommendations.map((serie) => {
+              return (
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <img
+                    src={`https://image.tmdb.org/t/p/original/${serie.poster_path}`}
+                    alt=""
+                    className="w-[419px] rounded-xl"
+                  />
+                  <h1 className="text-xl font-bold">{serie.name}</h1>
+                  <SecondaryButtons
+                    text="Voir plus"
+                    onClick={() => {
+                      window.open(`/serie/${serie.id}`, "_blank");
+                    }}
+                  />
+                </div>
+              );
+            })}
+        </div>
       </div>
     </div>
   );
