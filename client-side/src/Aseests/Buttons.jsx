@@ -1,10 +1,13 @@
 import React from "react";
 
-export const PrimaryButtons = (props) => {
+export const PrimaryButtons = ({ iconLeft, text, type }) => {
   return (
-    <button className="text-white px-4 md:px-8 py-2 md:py-2 bg-red flex justify-center border-red border-2 text-base md:text-lg rounded-lg items-center">
-      {props.iconLeft}
-      {props.text}
+    <button
+      type={type}
+      className=" gap-2 text-white px-4 md:px-8 py-2 md:py-2 bg-red flex justify-center border-red border-2 text-base md:text-lg rounded-lg items-center"
+    >
+      {iconLeft}
+      {text}
     </button>
   );
 };

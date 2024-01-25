@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { PrimaryButtonsIcon } from "../Aseests/Buttons";
-import FilterIcon from "../data/filtre-icon.svg";
 import { Card } from "../Aseests/Cards";
-import serie from "../data/serie2.jpg";
-import Left from "../data/ChevronLeftOutline.svg";
-import Right from "../data/ChevronRightOutline.svg";
 import axios from "axios";
 import {
   DropdownMenu,
