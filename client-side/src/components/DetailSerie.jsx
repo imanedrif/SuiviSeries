@@ -14,6 +14,54 @@ const DetailSerie = () => {
   const [isClicked, SetIsclicked] = useState(false);
   const [checkedEps, setCheckedEps] = useState({});
   const [recommendations, setRecommendations] = useState([]);
+  const [isFav, setIsFav] = useState(false);
+
+  // check if the serie is already in the favorites list or not
+  useEffect(() => {
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    let userId = user.id;
+    let serieId = id;
+    let token = sessionStorage.getItem("token");
+    axios
+      .get(`http://localhost:8000/api/user/favorite-series`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("res", res);
+        if (res.data) {
+          setIsFav(true);
+        }
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const addtoFavories = () => {
+    SetIsclicked(true);
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    let userId = user.id;
+    let serieId = id;
+    let token = sessionStorage.getItem("token");
+    axios
+      .post(
+        `http://localhost:8000/api/user/favorite-series/${serieId}`,
+        {
+          title: details?.name,
+          image: details?.poster_path,
+          overview: details?.overview,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("added", res);
+      })
+      .catch((err) => console.log(err));
+  };
 
   const handleCheck = (epNumber) => {
     setCheckedEps((prev) => ({
@@ -43,9 +91,6 @@ const DetailSerie = () => {
       console.log(e);
     }
   }
-  const handleClick = () => {
-    SetIsclicked(true);
-  };
 
   const getSeasonEPS = async (season) => {
     try {
@@ -78,15 +123,15 @@ const DetailSerie = () => {
             <div className="flex flex-col gap-1 md:flex-row items-center md:gap-4">
               <h1 className=" text-4xl font-bold">{details?.name}</h1>
               <div className="border w-full"></div>
-              {isClicked ? (
+              {isFav ? (
                 <HeartFilledIcon
                   className="h-12 w-12 rounded-full cursor-pointer"
-                  onClick={() => SetIsclicked(false)}
+                  onClick={addtoFavories}
                 />
               ) : (
                 <HeartIcon
                   className="h-12 w-12 cursor-pointer"
-                  onClick={handleClick}
+                  onClick={addtoFavories}
                 />
               )}
             </div>

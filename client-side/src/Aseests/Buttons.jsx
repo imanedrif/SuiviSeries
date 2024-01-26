@@ -22,12 +22,13 @@ export const PrimaryButtonsIcon = (props) => {
     </button>
   );
 };
-export const SecondaryButtons = ({ text, onClick }) => {
+export const SecondaryButtons = ({ text, onClick, className, icon }) => {
   return (
     <button
       onClick={onClick}
-      className="text-white px-4 md:px-8 py-2 md:py-2 bg-grey-500 flex justify-center text-base md:text-lg rounded-lg border-2"
+      className={`text-white px-4 items-center md:px-8 py-2 md:py-2 bg-grey-500 flex justify-center text-base md:text-lg rounded-lg border-2 ${className}`}
     >
+      {icon}
       {text}
     </button>
   );

@@ -17,7 +17,7 @@ class Series extends Model
     ];
     public function favorites()
     {
-        return $this->belongsToMany(User::class, 'favorites');
+        return $this->belongsToMany(User::class, 'favoris');
     }
     public function episodes()
     {

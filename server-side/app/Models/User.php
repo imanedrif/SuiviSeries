@@ -25,7 +25,7 @@ class User extends Authenticatable
 
     public function favorites()
     {
-        return $this->belongsToMany(Series::class, 'favorites');
+        return $this->belongsToMany(Series::class, 'favoris');
     }
 
     public function watchedEpisodes()

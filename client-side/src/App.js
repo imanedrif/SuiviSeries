@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './components/Login'
 import Register from './components/Register'
 import DetailSerie from './components/DetailSerie'
+import Profile from './components/Profile'
 
 const App = () => {
     return (
@@ -18,6 +19,7 @@ const App = () => {
                     <Route path='/connecter' element={<Login />} />
                     <Route path='/inscrire' element={<Register />} />
                     <Route path='/Serie/:id' element={<DetailSerie />} />
+                    <Route path='profile/:userName/:userId' element={<Profile/>} />
                 </Routes>
                 </div>
             </BrowserRouter>

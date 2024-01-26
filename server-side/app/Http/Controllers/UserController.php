@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Episode;
+use App\Models\Series;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -18,9 +19,10 @@ class UserController extends Controller
     public function getFavorites(Request $request)
     {
         $user = $request->user();
-        $series = $user->series;
+        $series = $user->favorites()->get();
         return response()->json([
             'success' => true,
+            'user' => $user,
             'series' => $series
         ]);
     }
@@ -33,10 +35,18 @@ class UserController extends Controller
             'episodes' => $episodes
         ]);
     }
-    public function toggleSerieInFavorites(Request $request)
+    public function toggleSerieInFavorites(Request $request, $serieId)
     {
         $user = $request->user();
-        $user->series()->toggle($request->serie_id);
+
+        // Find the series in the Series table or create a new one
+        $serie = Series::firstOrCreate(
+            ['tmdb_series_id' => $serieId],
+            ['title' => $request->title, 'image' => $request->image, 'overview' => $request->overview]
+        );
+
+        // Toggle the series in favorites
+        $user->favorites()->toggle($serie->id);
         return response()->json([
             'success' => true,
             'message' => 'Serie toggled in favorites'
