@@ -11,9 +11,12 @@ class Series extends Model
 
     protected $fillable = [
         'tmdb_series_id',
-        'title',
-        'image',
+        'name',
+        'poster_path',
         'overview',
+        'first_air_date',
+
+        'vote_average',
     ];
     public function favorites()
     {

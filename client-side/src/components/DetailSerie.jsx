@@ -23,7 +23,7 @@ const DetailSerie = () => {
     let serieId = id;
     let token = sessionStorage.getItem("token");
     axios
-      .get(`http://localhost:8000/api/user/favorite-series`, {
+      .get(`http://localhost:8000/api/user/favorite-series/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -31,25 +31,27 @@ const DetailSerie = () => {
       .then((res) => {
         console.log("res", res);
         if (res.data) {
-          setIsFav(true);
+          console.log("res", res.data.isFavorite);
+          setIsFav(res.data.isFavorite);
         }
       })
       .catch((err) => console.log(err));
   }, []);
 
   const addtoFavories = () => {
-    SetIsclicked(true);
     let user = JSON.parse(sessionStorage.getItem("user"));
-    let userId = user.id;
     let serieId = id;
     let token = sessionStorage.getItem("token");
+    console.log("details are ", token);
     axios
       .post(
         `http://localhost:8000/api/user/favorite-series/${serieId}`,
         {
-          title: details?.name,
-          image: details?.poster_path,
+          name: details?.name,
+          poster_path: details?.poster_path,
           overview: details?.overview,
+          first_air_date: details?.first_air_date,
+          vote_average: details?.vote_average,
         },
         {
           headers: {
@@ -58,7 +60,13 @@ const DetailSerie = () => {
         }
       )
       .then((res) => {
-        console.log("added", res);
+        if (res.status === 200) {
+          console.log(res);
+          setIsFav(false);
+        } else if (res.status === 201) {
+          console.log(res);
+          setIsFav(true);
+        }
       })
       .catch((err) => console.log(err));
   };

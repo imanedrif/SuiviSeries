@@ -1,11 +1,12 @@
 import React from "react";
 import { PrimaryButtons } from "../Aseests/Buttons";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import vector1 from "../data/Vector 1.svg";
 
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const auth = sessionStorage.getItem("isAuth");
 
   async function login(e) {
     e.preventDefault();
@@ -20,7 +21,7 @@ const Login = () => {
       sessionStorage.setItem("token", data.token);
       sessionStorage.setItem("user", JSON.stringify(data.user));
       sessionStorage.setItem("isAuth", true);
-      window.location.href = "/home";
+      window.location.href = "/";
     } else {
       console.log("error");
       alert("L'utilisateur existe déjà");
@@ -29,6 +30,7 @@ const Login = () => {
 
   return (
     <>
+      {auth && <Navigate to="/" />}
       <div className="container m-auto flex flex-col items-center justify-center min-h-screen gap-16 relative text-white z-[1]">
         <div className="flex items-center gap-6">
           <div className=" h-[1px] w-[198px] bg-slate-300"></div>
@@ -56,7 +58,7 @@ const Login = () => {
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              type="text"
+              type="password"
               placeholder="Entrer  votre nom mot de passe"
               className=" font-thin text-gray-500 py-5 px-6 w-full rounded-md"
             />

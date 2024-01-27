@@ -12,8 +12,6 @@ const Profile = () => {
   const [favorites, setFavorites] = useState([]);
 
   async function getFavories() {
-    let user = JSON.parse(sessionStorage.getItem("user"));
-    let userId = user.id;
     let token = sessionStorage.getItem("token");
     axios
       .get(`http://localhost:8000/api/user/favorite-series`, {
@@ -29,6 +27,7 @@ const Profile = () => {
       })
       .catch((err) => console.log(err));
   }
+
   useEffect(() => {
     getFavories();
   }, []);
@@ -36,6 +35,7 @@ const Profile = () => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+  console.log("favorites", favorites);
 
   return (
     <div className="container mt-8 h-full m-auto gap-10 flex flex-row items-center bg-neutral-200 bg-opacity-20 text-white">
@@ -83,10 +83,10 @@ const Profile = () => {
         {activeTab === "mes-favories" && (
           <div>
             {favorites &&
-              favorites.map((serie) => {
+              favorites?.map((serie) => {
                 return (
                   <div className="flex flex-row gap-4">
-                    <Card serie={serie} />
+                    <Card fromDB={true} serie={serie} />
                   </div>
                 );
               })}
