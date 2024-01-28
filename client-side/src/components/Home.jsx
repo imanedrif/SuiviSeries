@@ -47,13 +47,34 @@ const Home = () => {
   }
   async function getFilteredSerieData() {
     try {
-      let resp = await axios.get(
-        `https://api.themoviedb.org/3/tv/${filter}?api_key=5bf89b1ac4dec1f2a3dacb6b4b926527&page=${page}`
-      );
-      setSeries(resp.data.results);
+      if (filter === "favorites") {
+        getFavorites();
+      } else {
+        let resp = await axios.get(
+          `https://api.themoviedb.org/3/tv/${filter}?api_key=5bf89b1ac4dec1f2a3dacb6b4b926527&page=${page}`
+        );
+        setSeries(resp.data.results);
+      }
     } catch (e) {
       console.log(e);
     }
+  }
+
+  async function getFavorites() {
+    let token = sessionStorage.getItem("token");
+    axios
+      .get(`http://localhost:8000/api/user/favorite-series`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("res", res);
+        if (res.data && Array.isArray(res.data.series)) {
+          setSeries(res.data.series);
+        }
+      })
+      .catch((err) => console.log(err));
   }
   const handleNext = useCallback(() => {
     setPage((prevPage) => prevPage + 1);

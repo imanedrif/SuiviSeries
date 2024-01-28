@@ -19,7 +19,7 @@ const DetailSerie = () => {
   // check if the serie is already in the favorites list or not
   useEffect(() => {
     let user = JSON.parse(sessionStorage.getItem("user"));
-    let userId = user.id;
+    let userId = user?.id;
     let serieId = id;
     let token = sessionStorage.getItem("token");
     axios

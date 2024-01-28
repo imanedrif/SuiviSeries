@@ -24,7 +24,7 @@ const Login = () => {
       window.location.href = "/";
     } else {
       console.log("error");
-      alert("L'utilisateur existe déjà");
+      alert("Email ou mot de passe incorrecte");
     }
   }
 
@@ -48,7 +48,7 @@ const Login = () => {
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              type="text"
+              type="email"
               placeholder="Entrer  votre nom Email"
               className=" font-thin text-gray-500 py-5 px-6 w-full rounded-md"
             />

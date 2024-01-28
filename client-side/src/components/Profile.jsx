@@ -11,6 +11,13 @@ const Profile = () => {
   const userData = JSON.parse(user);
   const [favorites, setFavorites] = useState([]);
 
+  async function logout() {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("isAuth");
+    window.location.href = "/";
+  }
+
   async function getFavories() {
     let token = sessionStorage.getItem("token");
     axios
@@ -38,35 +45,41 @@ const Profile = () => {
   console.log("favorites", favorites);
 
   return (
-    <div className="container mt-8 h-full m-auto gap-10 flex flex-row items-center bg-neutral-200 bg-opacity-20 text-white">
-      <div className="flex flex-col w-fit gap-7 py-14 px-7 items-center justify-center h-full bg-gradient-to-b from-indigo-900 via-purple-800 to-indigo-900">
-        <SecondaryButtons
-          onClick={() => handleTabClick("mes-informations")}
-          className={
-            activeTab === "mes-informations"
-              ? "active text-violet-950 bg-white font-semibold text-lg bg-opacity-70 gap-2"
-              : ""
-          }
-          text="Mes Informations"
-        />
-        <SecondaryButtons
-          onClick={() => handleTabClick("mes-favories")}
-          className={
-            activeTab === "mes-favories"
-              ? "active  text-violet-950 bg-white font-semibold text-lg bg-opacity-70"
-              : ""
-          }
-          text="Mes Favories"
-        />
-        <button
-          onClick={() => handleTabClick("ep-regarde")}
-          className={activeTab === "ep-regarde" ? "active" : ""}
-        >
-          Épisodes Regardés
-        </button>
-        <button>Se Déconnecter</button>
+    <div className="container mt-8 m-auto grid grid-cols-1 lg:grid-cols-3 text-white">
+      {/* Sidebar */}
+      <div className="items-center justify-center flex gap-5 h-screen bg-gradient-to-b from-indigo-900 via-purple-800 to-indigo-900">
+        <div className="grid grid-rows-4 items-center justify-center h-full lg:h-auto">
+          <SecondaryButtons
+            onClick={() => handleTabClick("mes-informations")}
+            className={`sidebar-button ${
+              activeTab === "mes-informations" ? "active" : ""
+            }`}
+            text="Mes Informations"
+          />
+          <SecondaryButtons
+            onClick={() => handleTabClick("mes-favories")}
+            className={`sidebar-button ${
+              activeTab === "mes-favories" ? "active" : ""
+            }`}
+            text="Mes Favories"
+          />
+          <button
+            onClick={() => handleTabClick("ep-regarde")}
+            className={`sidebar-button ${
+              activeTab === "ep-regarde" ? "active" : ""
+            }`}
+          >
+            Épisodes Regardés
+          </button>
+          <button onClick={logout} className="sidebar-button">
+            Se Déconnecter
+          </button>
+        </div>
       </div>
-      <div className="">
+
+      {/* Content Area */}
+      <div className="col-span-2 flex flex-col justify-center pl-5 bg-neutral-200 bg-opacity-20">
+        {/* Content for each tab */}
         {activeTab === "mes-informations" && (
           <div>
             <h1>
@@ -81,7 +94,7 @@ const Profile = () => {
           </div>
         )}
         {activeTab === "mes-favories" && (
-          <div>
+          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-7">
             {favorites &&
               favorites?.map((serie) => {
                 return (
