@@ -73,7 +73,6 @@ class UserController extends Controller
     {
         $user = $request->user();
 
-        // Find the series in the Series table or create a new one
         $serie = Series::firstOrCreate(
             [
                 'tmdb_series_id' => $serieId,
@@ -102,38 +101,6 @@ class UserController extends Controller
             ], 201);
         }
     }
-
-    // public function toggleWatchedEpisode(Request $request, $episodeId)
-    // {
-    //     $user = $request->user();
-
-    //     // Find the episode in the Episode table or create a new one
-    //     $episode = Episode::firstOrCreate(
-    //         [
-    //             'series_id' => $request->series_id,
-    //             'tmdb_episode_id' => $request->tmdb_episode_id,
-    //         ]
-    //     );
-
-    //     // use WatchedEpisodes pivot table to toggle the episode
-    //     if ($user->watchedEpisodes()->where('episode_id', $episode->id)->exists()) {
-    //         $user->watchedEpisodes()->detach($episode->id);
-    //         return response()->json([
-    //             'action' => 'removed',
-    //             'success' => true,
-    //             'message' => 'Episode removed from watched episodes',
-    //         ], 200);
-    //     } else {
-    //         // if not, add it and return a message
-    //         $user->watchedEpisodes()->attach($episode->id);
-    //         return response()->json([
-    //             'action' => 'add',
-    //             'success' => true,
-    //             'message' => 'Episode added to watched episodes',
-    //             'episode' => $episode,
-    //         ], 201);
-    //     }
-    // }
     public function toggleWatchedEpisode(Request $request, $episodeId)
     {
         $user = $request->user();
