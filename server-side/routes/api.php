@@ -25,9 +25,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    // Route::get('/user/{userId}', [UserController::class, 'getUser']);
     Route::post('/user/favorite-series/{serieId}', [UserController::class, 'toggleSerieInFavorites']);
     Route::get('/user/favorite-series', [UserController::class, 'getFavorites']);
+    Route::get('/user/watched-episodes', [UserController::class, 'getWatchedEp']);
     Route::get('/user/favorite-series/{serieId}', [UserController::class, 'getIsFavorite']);
     Route::get('/user/watched-episodes/{serieId}', [UserController::class, 'getWatchedEpisodes']);
     Route::post('/user/watched-episode/{episodeId}', [UserController::class, 'toggleWatchedEpisode']);

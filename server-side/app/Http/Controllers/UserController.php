@@ -26,9 +26,18 @@ class UserController extends Controller
             'series' => $series
         ]);
     }
+    public function getWatchedEp(Request $request)
+    {
+        $user = $request->user();
+        $episodes = $user->watchedEpisodes()->get();
+        return response()->json([
+            'success' => true,
+            'user' => $user,
+            'series' => $episodes
+        ]);
+    }
     public function getIsFavorite(Request $request, $serieId)
     {
-        // check if the series is in favorites, if so, return true
         $user = $request->user();
         $serie = Series::where('tmdb_series_id', $serieId)->first();
         if ($user->favorites()->where('series_id', $serie->id)->exists()) {
@@ -46,27 +55,20 @@ class UserController extends Controller
     public function getWatchedEpisodes(Request $request, $serieId)
     {
         $user = $request->user();
-        $episode = Episode::where('tmdb_series_id', $serieId)->first();
-        if ($user->watchedEpisodes()->where('tmdb_episode_id', $episode->tmdb_episode_id)->exists()) {
-            return response()->json([
-                'success' => true,
-                'isWatched' => true
-            ]);
-        } else {
-            return response()->json([
-                'success' => true,
-                'isWatched' => false
-            ]);
-        }
-        // $user = $request->user();
-        // $serie = Series::where('tmdb_series_id', $serieId)->first();
-        // $episodes = $serie->episodes()->get();
-        // return response()->json([
-        //     'success' => true,
-        //     'user' => $user,
-        //     'episodes' => $episodes
-        // ]);
+
+        $watchedEpisodeIds = Episode::join('episode_regarde', 'episode_regarde.episode_id', '=', 'episodes.id')
+            ->where('episode_regarde.user_id', $user->id)
+            ->where('episodes.series_id', $serieId)
+            ->pluck('episodes.tmdb_episode_id');
+
+        return response()->json([
+            'success' => true,
+            'watchedEpisodes' => $watchedEpisodeIds
+        ]);
     }
+
+
+
     public function toggleSerieInFavorites(Request $request, $serieId)
     {
         $user = $request->user();
@@ -101,35 +103,63 @@ class UserController extends Controller
         }
     }
 
+    // public function toggleWatchedEpisode(Request $request, $episodeId)
+    // {
+    //     $user = $request->user();
+
+    //     // Find the episode in the Episode table or create a new one
+    //     $episode = Episode::firstOrCreate(
+    //         [
+    //             'series_id' => $request->series_id,
+    //             'tmdb_episode_id' => $request->tmdb_episode_id,
+    //         ]
+    //     );
+
+    //     // use WatchedEpisodes pivot table to toggle the episode
+    //     if ($user->watchedEpisodes()->where('episode_id', $episode->id)->exists()) {
+    //         $user->watchedEpisodes()->detach($episode->id);
+    //         return response()->json([
+    //             'action' => 'removed',
+    //             'success' => true,
+    //             'message' => 'Episode removed from watched episodes',
+    //         ], 200);
+    //     } else {
+    //         // if not, add it and return a message
+    //         $user->watchedEpisodes()->attach($episode->id);
+    //         return response()->json([
+    //             'action' => 'add',
+    //             'success' => true,
+    //             'message' => 'Episode added to watched episodes',
+    //             'episode' => $episode,
+    //         ], 201);
+    //     }
+    // }
     public function toggleWatchedEpisode(Request $request, $episodeId)
     {
         $user = $request->user();
 
-        // Find the episode in the Episode table or create a new one
+        // Use firstOrCreate to either get the existing episode or create a new one
         $episode = Episode::firstOrCreate(
-            [
-                'series_id' => $request->series_id,
-                'tmdb_episode_id' => $request->tmdb_episode_id,
-            ]
+            ['tmdb_episode_id' => $request->tmdb_episode_id, 'series_id' => $request->series_id],
         );
 
-        // use WatchedEpisodes pivot table to toggle the episode
+
+        // Now toggle the watched state
         if ($user->watchedEpisodes()->where('episode_id', $episode->id)->exists()) {
             $user->watchedEpisodes()->detach($episode->id);
-            return response()->json([
-                'action' => 'removed',
-                'success' => true,
-                'message' => 'Episode removed from watched episodes',
-            ], 200);
+            $action = 'removed';
         } else {
-            // if not, add it and return a message
             $user->watchedEpisodes()->attach($episode->id);
-            return response()->json([
-                'action' => 'add',
-                'success' => true,
-                'message' => 'Episode added to watched episodes',
-                'episode' => $episode,
-            ], 201);
+            $action = 'added';
         }
+
+        return response()->json([
+            'action' => $action,
+            'success' => true,
+            'message' => "Episode has been {$action} from watched episodes.",
+            'episode' => $episode,
+        ]);
     }
+
+
 }

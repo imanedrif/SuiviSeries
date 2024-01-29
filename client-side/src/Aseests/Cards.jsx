@@ -5,13 +5,11 @@ import { Navigate } from "react-router-dom";
 import LinesEllipsis from "react-lines-ellipsis";
 
 export const Card = ({ serie, fromDB }) => {
-  // const [isHovered, setIsHovered] = useState(false)
   const [isClicked, SetIsclicked] = useState(false);
 
   const handleClick = () => {
     SetIsclicked(true);
 
-    // add to favories traitement
   };
   console.log(serie);
 
@@ -21,7 +19,6 @@ export const Card = ({ serie, fromDB }) => {
       bg-cover bg-center bg-no-repeat
     "
       style={{
-        // background: `url(https://image.tmdb.org/t/p${serie?.image})`,
         backgroundImage: `url(https://image.tmdb.org/t/p/original${serie?.poster_path})`,
       }}
       onClick={() => {
@@ -57,24 +54,6 @@ export const Card = ({ serie, fromDB }) => {
               basedOn="letters"
             />
           </p>
-          {/* <div className="flex flex-row  gap-3 items-baseline bottom-3 absolute">
-              <div className=" bg-slate-300 w-64 h-[1px]"></div>
-              {isClicked ? (
-                <img
-                  src={FilledHeart}
-                  alt=""
-                  onClick={() => SetIsclicked(false)}
-                  className=" cursor-pointer h-5"
-                />
-              ) : (
-                <img
-                  src={Heart}
-                  alt=""
-                  onClick={handleClick}
-                  className=" cursor-pointer h-5"
-                />
-              )}
-            </div> */}
         </div>
       </div>
     </div>

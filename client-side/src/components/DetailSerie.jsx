@@ -12,12 +12,10 @@ const DetailSerie = () => {
   const [details, setDetails] = useState(null);
   const [Eps, setEps] = useState([]);
   const [isClicked, SetIsclicked] = useState(false);
-  const [checkedEps, setCheckedEps] = useState({});
+  const [checkedEps, setCheckedEps] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
   const [isFav, setIsFav] = useState(false);
-  const [isWatched, setIsWatched] = useState(false);
 
-  // check if the episode is already in the watched episodes list or not
   useEffect(() => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     let userId = user?.id;
@@ -30,13 +28,12 @@ const DetailSerie = () => {
         },
       })
       .then((res) => {
-        console.log("watched eps : ", res);
-        setCheckedEps(res.data.episodes);
+        console.log("watched eps : ", res.data.watchedEpisodes);
+        setCheckedEps(res.data.watchedEpisodes);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  // check if the serie is already in the favorites list or not
   useEffect(() => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     let userId = user?.id;
@@ -59,17 +56,19 @@ const DetailSerie = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  //  add to watched episodes
-
-  const addToWatchedEpisodes = (episodeId, seriesId) => {
+  const addToWatchedEpisodes = (tmdbEpisodeId, seriesId) => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     let token = sessionStorage.getItem("token");
-    console.log("details are ", token);
+    if(checkedEps.includes(tmdbEpisodeId)){
+      setCheckedEps((prev) => prev.filter((ep) => ep !== tmdbEpisodeId));
+    }else{
+      setCheckedEps((prev) => [...prev, tmdbEpisodeId]);
+    }
     axios
       .post(
-        `http://localhost:8000/api/user/watched-episode/${episodeId}`,
+        `http://localhost:8000/api/user/watched-episode/${tmdbEpisodeId}`,
         {
-          tmdb_episode_id: episodeId,
+          tmdb_episode_id: tmdbEpisodeId,
           series_id: seriesId,
         },
         {
@@ -80,18 +79,16 @@ const DetailSerie = () => {
       )
       .then((res) => {
         console.log("add ep res", res);
-        if (res.data.action === "add") {
+        console.log("checked eps", checkedEps);
+        if (res.data.action === "added") {
           console.log("Episode added to watched episodes");
-          setIsWatched(true);
+          setCheckedEps((prev) => [...prev, tmdbEpisodeId]);
         } else {
           console.log("Episode removed from watched episodes");
-          setIsWatched(false);
+          setCheckedEps((prev) => prev.filter((ep) => ep !== tmdbEpisodeId));
         }
-        setCheckedEps((prev) => ({
-          ...prev,
-          [episodeId]: !prev[episodeId],
-        }));
       })
+
       .catch((err) => console.log(err));
   };
 
@@ -174,7 +171,6 @@ const DetailSerie = () => {
     getSerieRecommendations();
   }, []);
 
-  // console.log(process.env.REACT_APP_IMAGES_URL)
   return (
     <div className="container m-auto p-4 gap-10 flex flex-col items-center justify-center h-full mt-8 text-white">
       <div className="flex gap-6 flex-col items-center p-4 lg:flex-row md:p-8 bg-neutral-200 bg-opacity-10 rounded-lg container m-auto md:gap-14">
@@ -220,7 +216,6 @@ const DetailSerie = () => {
           <div className="border w-fit p-3 rounded text-yellow-500 border-yellow-500">
             <span className="font-bold">
               {
-                // get only one number after the point
                 details?.vote_average.toFixed(1)
               }
             </span>
@@ -253,17 +248,20 @@ const DetailSerie = () => {
       <div className="grid grid-cols-4 lg:grid-cols-10 bg-zinc-300 bg-opacity-10 container m-auto p-6 gap-6 items-start justify-start rounded-lg">
         {Eps.map((ep) => {
           return (
-            <div className=" flex  cursor-pointer flex-col px-6 py-3 items-center justify-start bg-purple-900 bg-opacity-20 border-2 border-purple-900 rounded-md">
+            <div className=" flex  cursor-pointer flex-col px-6 py-3 items-center justify-start bg-purple-900 bg-opacity-20 border-2 border-purple-900 rounded-md"
+            onClick={() => addToWatchedEpisodes(ep.episode_number, id)}
+            >
               <span className="font-bold text-lg">EP{ep.episode_number}</span>
               <Icon
                 icon={
-                  isWatched
+                  checkedEps.includes(ep.episode_number)
                     ? "ri:checkbox-circle-fill"
                     : "ri:checkbox-circle-line"
                 }
                 className="h-7 w-7"
-                color={isWatched ? "green" : "white"}
-                onClick={() => addToWatchedEpisodes(ep.episode_number, id)}
+                color={
+                  checkedEps.includes(ep.episode_number) ? "green" : "white"
+                }
               />
             </div>
           );

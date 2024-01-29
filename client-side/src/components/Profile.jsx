@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { PrimaryButtons, SecondaryButtons } from "../Aseests/Buttons";
 import { Card } from "../Aseests/Cards";
 import axios from "axios";
@@ -10,12 +10,38 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("mes-informations");
   const userData = JSON.parse(user);
   const [favorites, setFavorites] = useState([]);
+  const [watchedEpisodes, setWatchedEpisodes] = useState([]);
 
   async function logout() {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
     sessionStorage.removeItem("isAuth");
     window.location.href = "/";
+  }
+
+  async function getWatchedEpisodes() {
+    let token = sessionStorage.getItem("token");
+    axios
+      .get(`http://localhost:8000/api/user/watched-episodes`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(async (res) => {
+        console.log("res", res);
+        if (res.data && Array.isArray(res.data.series)) {
+          const watchedEpisodesWithDetails = await Promise.all(
+            res.data.series.map(async (episode) => {
+              const resp = await axios.get(
+                `https://api.themoviedb.org/3/tv/${episode.series_id}?api_key=5bf89b1ac4dec1f2a3dacb6b4b926527`
+              );
+              return { ...episode, seriesDetails: resp.data };
+            })
+          );
+          setWatchedEpisodes(watchedEpisodesWithDetails);
+        }
+      })
+      .catch((err) => console.log(err));
   }
 
   async function getFavories() {
@@ -37,6 +63,7 @@ const Profile = () => {
 
   useEffect(() => {
     getFavories();
+    getWatchedEpisodes();
   }, []);
 
   const handleTabClick = (tab) => {
@@ -85,7 +112,6 @@ const Profile = () => {
       </div>
       {/* Content Area */}
       <div className="col-span-2 flex flex-col items-center lg:items-start lg:justify-center pl-5 bg-neutral-200 bg-opacity-20 h-screen pt-8 ">
-        {/* Content for each tab */}
         {activeTab === "mes-informations" && (
           <div className="flex flex-col items-center lg:items-start gap-10">
             <div className="flex flex-row items-center gap-5">
@@ -101,7 +127,7 @@ const Profile = () => {
                 E-mail: <span>{userData.email}</span>
               </p>
               <p className="text-medium text-lg">
-                Nombre de séries suivies: <span>0</span>
+                Nombre de séries suivies: <span>{watchedEpisodes.length}</span>
               </p>
               <p className="text-medium text-lg">
                 Nombre de series favorites: <span>{favorites.length}</span>
@@ -116,14 +142,32 @@ const Profile = () => {
                 return (
                   <div className="flex flex-row gap-4 m-2">
                     <Card fromDB={true} serie={serie} />
-                    {/* push f github */}
                   </div>
                 );
               })}
           </div>
         )}
         {activeTab === "ep-regarde" && (
-          <div>{/* Display user's watched episodes */}</div>
+          <div className="p-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 justify-items-center overflow-auto">
+              {watchedEpisodes &&
+                watchedEpisodes?.map((episode) => {
+                  return (
+                    <Link
+                      to={`/serie/${episode.seriesDetails.id}`}
+                      className="flex flex-col bg-gray-200 opacity-90 p-4 rounded-lg shadow-md m-2 cursor-pointer"
+                    >
+                      <h2 className="text-xl font-bold mb-2 text-violet-950">
+                        {episode.seriesDetails.name}
+                      </h2>
+                      <p className="text-gray-700 text-medium">
+                        Episode: {episode.tmdb_episode_id}
+                      </p>
+                    </Link>
+                  );
+                })}
+            </div>
+          </div>
         )}
       </div>
     </div>

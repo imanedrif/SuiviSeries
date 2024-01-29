@@ -27,19 +27,15 @@ const Home = () => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    // getTrendingSerieData();
     getFilteredSerieData();
   }, [filter, page]);
 
   async function getTrendingSerieData() {
     try {
-      // const ApiKey = "5bf89b1ac4dec1f2a3dacb6b4b926527"
       let resp = await axios.get(
         `https://api.themoviedb.org/3/discover/tv?api_key=5bf89b1ac4dec1f2a3dacb6b4b926527`
       );
-      /*console.log(resp.data.results);*/
       setSeries(resp.data.results);
-      // console.log(series);
     } catch (e) {
       console.log(e);
     } finally {
@@ -90,13 +86,11 @@ const Home = () => {
       <div className="flex flex-row gap-4 items-center z-[1]">
         <h2 className="text-white text-2xl font-medium">Liste séries</h2>
         <div className="bg-slate-50 xl:w-[910px] md:w-[400px] md-auto h-[1px]"></div>
-        {/* <PrimaryButtonsIcon text='Filtre' iconRight={FilterIcon} /> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">Filtrer</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
-            {/* <DropdownMenuLabel>Panel Position</DropdownMenuLabel> */}
             <DropdownMenuSeparator />
             <DropdownMenuRadioGroup value={filter} onValueChange={setFilter}>
               <DropdownMenuRadioItem value="top_rated">
@@ -118,7 +112,6 @@ const Home = () => {
             <Card fromDB={false} serie={serie} />
           ))}
         </div>
-        {/* Background overlay with absolute positioning */}
         <div className="absolute inset-0 z-0 bg-gradient-to-r from-indigo-900 via-purple-800 to-indigo-900 opacity-75 filter blur-3xl"></div>
       </div>
       <div className="flex gap-7">
