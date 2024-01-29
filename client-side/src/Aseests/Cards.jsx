@@ -26,7 +26,7 @@ export const Card = ({ serie, fromDB }) => {
       }}
       onClick={() => {
         window.open(
-          `/serie/${fromDB ? serie?.tmdb_series_id : serie?.id}`,
+          `/serie/${!fromDB ? serie?.id : serie?.tmdb_series_id}`,
           "_self"
         );
       }}

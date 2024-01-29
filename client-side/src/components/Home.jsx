@@ -48,7 +48,7 @@ const Home = () => {
   async function getFilteredSerieData() {
     try {
       if (filter === "favorites") {
-        getFavorites();
+        getFavories();
       } else {
         let resp = await axios.get(
           `https://api.themoviedb.org/3/tv/${filter}?api_key=5bf89b1ac4dec1f2a3dacb6b4b926527&page=${page}`
@@ -60,7 +60,7 @@ const Home = () => {
     }
   }
 
-  async function getFavorites() {
+  async function getFavories() {
     let token = sessionStorage.getItem("token");
     axios
       .get(`http://localhost:8000/api/user/favorite-series`, {
@@ -76,6 +76,7 @@ const Home = () => {
       })
       .catch((err) => console.log(err));
   }
+
   const handleNext = useCallback(() => {
     setPage((prevPage) => prevPage + 1);
   }, []);
@@ -114,7 +115,7 @@ const Home = () => {
       <div className="relative">
         <div className="relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 z-10">
           {series.map((serie, i) => (
-            <Card serie={serie} />
+            <Card fromDB={false} serie={serie} />
           ))}
         </div>
         {/* Background overlay with absolute positioning */}

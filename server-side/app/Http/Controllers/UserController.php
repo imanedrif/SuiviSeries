@@ -43,14 +43,29 @@ class UserController extends Controller
             ]);
         }
     }
-    public function getWatched(Request $request)
+    public function getWatchedEpisodes(Request $request, $serieId)
     {
         $user = $request->user();
-        $episodes = $user->episodes;
-        return response()->json([
-            'success' => true,
-            'episodes' => $episodes
-        ]);
+        $episode = Episode::where('tmdb_series_id', $serieId)->first();
+        if ($user->watchedEpisodes()->where('tmdb_episode_id', $episode->tmdb_episode_id)->exists()) {
+            return response()->json([
+                'success' => true,
+                'isWatched' => true
+            ]);
+        } else {
+            return response()->json([
+                'success' => true,
+                'isWatched' => false
+            ]);
+        }
+        // $user = $request->user();
+        // $serie = Series::where('tmdb_series_id', $serieId)->first();
+        // $episodes = $serie->episodes()->get();
+        // return response()->json([
+        //     'success' => true,
+        //     'user' => $user,
+        //     'episodes' => $episodes
+        // ]);
     }
     public function toggleSerieInFavorites(Request $request, $serieId)
     {
@@ -67,14 +82,6 @@ class UserController extends Controller
                 'vote_average' => $request->vote_average
             ]
         );
-
-        // Toggle the series in favorites
-        // $user->favorites()->toggle($serie->id);
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Serie toggled in favorites'
-        // ]);
-        // check if the series is already in favorites, if so, remove it and return a message
         if ($user->favorites()->where('series_id', $serie->id)->exists()) {
             $user->favorites()->detach($serie->id);
             return response()->json([
@@ -94,14 +101,35 @@ class UserController extends Controller
         }
     }
 
-    public function toggleWatchedEpisode(Request $request, Episode $episode)
+    public function toggleWatchedEpisode(Request $request, $episodeId)
     {
         $user = $request->user();
 
-        if ($user->watchedEpisodes()->toggle($episode)) {
-            return response()->json(['message' => 'Episode marked as watched successfully']);
+        // Find the episode in the Episode table or create a new one
+        $episode = Episode::firstOrCreate(
+            [
+                'series_id' => $request->series_id,
+                'tmdb_episode_id' => $request->tmdb_episode_id,
+            ]
+        );
+
+        // use WatchedEpisodes pivot table to toggle the episode
+        if ($user->watchedEpisodes()->where('episode_id', $episode->id)->exists()) {
+            $user->watchedEpisodes()->detach($episode->id);
+            return response()->json([
+                'action' => 'removed',
+                'success' => true,
+                'message' => 'Episode removed from watched episodes',
+            ], 200);
         } else {
-            return response()->json(['message' => 'Episode removed from watched list successfully']);
+            // if not, add it and return a message
+            $user->watchedEpisodes()->attach($episode->id);
+            return response()->json([
+                'action' => 'add',
+                'success' => true,
+                'message' => 'Episode added to watched episodes',
+                'episode' => $episode,
+            ], 201);
         }
     }
 }

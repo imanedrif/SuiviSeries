@@ -15,6 +15,26 @@ const DetailSerie = () => {
   const [checkedEps, setCheckedEps] = useState({});
   const [recommendations, setRecommendations] = useState([]);
   const [isFav, setIsFav] = useState(false);
+  const [isWatched, setIsWatched] = useState(false);
+
+  // check if the episode is already in the watched episodes list or not
+  useEffect(() => {
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    let userId = user?.id;
+    let serieId = id;
+    let token = sessionStorage.getItem("token");
+    axios
+      .get(`http://localhost:8000/api/user/watched-episodes/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("watched eps : ", res);
+        setCheckedEps(res.data.episodes);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   // check if the serie is already in the favorites list or not
   useEffect(() => {
@@ -30,6 +50,7 @@ const DetailSerie = () => {
       })
       .then((res) => {
         console.log("res", res);
+
         if (res.data) {
           console.log("res", res.data.isFavorite);
           setIsFav(res.data.isFavorite);
@@ -37,6 +58,42 @@ const DetailSerie = () => {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  //  add to watched episodes
+
+  const addToWatchedEpisodes = (episodeId, seriesId) => {
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    let token = sessionStorage.getItem("token");
+    console.log("details are ", token);
+    axios
+      .post(
+        `http://localhost:8000/api/user/watched-episode/${episodeId}`,
+        {
+          tmdb_episode_id: episodeId,
+          series_id: seriesId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("add ep res", res);
+        if (res.data.action === "add") {
+          console.log("Episode added to watched episodes");
+          setIsWatched(true);
+        } else {
+          console.log("Episode removed from watched episodes");
+          setIsWatched(false);
+        }
+        setCheckedEps((prev) => ({
+          ...prev,
+          [episodeId]: !prev[episodeId],
+        }));
+      })
+      .catch((err) => console.log(err));
+  };
 
   const addtoFavories = () => {
     let user = JSON.parse(sessionStorage.getItem("user"));
@@ -200,13 +257,13 @@ const DetailSerie = () => {
               <span className="font-bold text-lg">EP{ep.episode_number}</span>
               <Icon
                 icon={
-                  checkedEps[ep.episode_number]
+                  isWatched
                     ? "ri:checkbox-circle-fill"
                     : "ri:checkbox-circle-line"
                 }
                 className="h-7 w-7"
-                color={checkedEps[ep.episode_number] ? "green" : "white"}
-                onClick={() => handleCheck(ep.episode_number)}
+                color={isWatched ? "green" : "white"}
+                onClick={() => addToWatchedEpisodes(ep.episode_number, id)}
               />
             </div>
           );

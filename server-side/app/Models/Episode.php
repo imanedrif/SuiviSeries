@@ -11,12 +11,12 @@ class Episode extends Model
 
     protected $fillable = [
         'tmdb_episode_id',
-        'episode_number',
+        'series_id',
     ];
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'watched_episodes');
+        return $this->belongsToMany(User::class, 'episode_regarde');
     }
 
     public function series()

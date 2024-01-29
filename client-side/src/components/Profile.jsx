@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { SecondaryButtons } from "../Aseests/Buttons";
+import { PrimaryButtons, SecondaryButtons } from "../Aseests/Buttons";
 import { Card } from "../Aseests/Cards";
 import axios from "axios";
 
@@ -47,59 +47,76 @@ const Profile = () => {
   return (
     <div className="container mt-8 m-auto grid grid-cols-1 lg:grid-cols-3 text-white">
       {/* Sidebar */}
-      <div className="items-center justify-center flex gap-5 h-screen bg-gradient-to-b from-indigo-900 via-purple-800 to-indigo-900">
-        <div className="grid grid-rows-4 items-center justify-center h-full lg:h-auto">
+      <div className="flex flex-row lg:flex-col items-center justify-center lg:h-screen bg-gradient-to-b from-indigo-900 via-purple-800 to-indigo-900">
+        <div className="grid grid-cols-4 lg:grid-cols-1 gap-10 items-center justify-center h-full lg:h-auto p-3">
           <SecondaryButtons
             onClick={() => handleTabClick("mes-informations")}
-            className={`sidebar-button ${
-              activeTab === "mes-informations" ? "active" : ""
+            className={`sidebar-button text-xs p-2 w-full sm:w-auto break-words ${
+              activeTab === "mes-informations"
+                ? "active bg-purple-700 text-white"
+                : ""
             }`}
             text="Mes Informations"
           />
           <SecondaryButtons
             onClick={() => handleTabClick("mes-favories")}
-            className={`sidebar-button ${
-              activeTab === "mes-favories" ? "active" : ""
+            className={`sidebar-button text-xs p-2 w-full sm:w-auto break-words ${
+              activeTab === "mes-favories"
+                ? "active bg-purple-700 text-white"
+                : ""
             }`}
             text="Mes Favories"
           />
-          <button
+          <SecondaryButtons
+            text="Épisodes Regardés"
             onClick={() => handleTabClick("ep-regarde")}
-            className={`sidebar-button ${
-              activeTab === "ep-regarde" ? "active" : ""
+            className={`sidebar-button text-xs p-2 w-full sm:w-auto break-words ${
+              activeTab === "ep-regarde"
+                ? "active bg-purple-700 text-white"
+                : ""
             }`}
-          >
-            Épisodes Regardés
-          </button>
-          <button onClick={logout} className="sidebar-button">
-            Se Déconnecter
-          </button>
+          />
+          <PrimaryButtons
+            onClick={logout}
+            className="sidebar-button text-xs p-2 w-full sm:w-auto break-words"
+            text="Se Déconnecter"
+          />
         </div>
       </div>
-
       {/* Content Area */}
-      <div className="col-span-2 flex flex-col justify-center pl-5 bg-neutral-200 bg-opacity-20">
+      <div className="col-span-2 flex flex-col items-center lg:items-start lg:justify-center pl-5 bg-neutral-200 bg-opacity-20 h-screen pt-8 ">
         {/* Content for each tab */}
         {activeTab === "mes-informations" && (
-          <div>
-            <h1>
+          <div className="flex flex-col items-center lg:items-start gap-10">
+            <div className="flex flex-row items-center gap-5">
               <Icon
                 icon="bxs:user"
                 color="grey"
                 className="h-14 w-14 rounded-full p-1 bg-white"
-              />{" "}
-              {userData.name}
-            </h1>
-            <p>Adresse e-mail: {userData.email}</p>
+              />
+              <h1 className="text-5xl font-semibold">{userData.name}</h1>
+            </div>
+            <div className="flex flex-col items-center lg:items-start gap-3">
+              <p className="text-medium text-xl">
+                E-mail: <span>{userData.email}</span>
+              </p>
+              <p className="text-medium text-lg">
+                Nombre de séries suivies: <span>0</span>
+              </p>
+              <p className="text-medium text-lg">
+                Nombre de series favorites: <span>{favorites.length}</span>
+              </p>
+            </div>
           </div>
         )}
         {activeTab === "mes-favories" && (
-          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-7">
+          <div className="p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-7 justify-items-center overflow-auto">
             {favorites &&
               favorites?.map((serie) => {
                 return (
-                  <div className="flex flex-row gap-4">
+                  <div className="flex flex-row gap-4 m-2">
                     <Card fromDB={true} serie={serie} />
+                    {/* push f github */}
                   </div>
                 );
               })}

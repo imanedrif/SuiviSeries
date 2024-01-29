@@ -15,7 +15,6 @@ class Series extends Model
         'poster_path',
         'overview',
         'first_air_date',
-
         'vote_average',
     ];
     public function favorites()

@@ -30,7 +30,7 @@ class User extends Authenticatable
 
     public function watchedEpisodes()
     {
-        return $this->belongsToMany(Episode::class, 'watched_episodes');
+        return $this->belongsToMany(Episode::class, 'episode_regarde');
     }
 
     /**

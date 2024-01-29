@@ -29,6 +29,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/user/favorite-series/{serieId}', [UserController::class, 'toggleSerieInFavorites']);
     Route::get('/user/favorite-series', [UserController::class, 'getFavorites']);
     Route::get('/user/favorite-series/{serieId}', [UserController::class, 'getIsFavorite']);
-
-    Route::post('/user/watched-episode/{episode}', [UserController::class, 'toggleWatchedEpisode']);
+    Route::get('/user/watched-episodes/{serieId}', [UserController::class, 'getWatchedEpisodes']);
+    Route::post('/user/watched-episode/{episodeId}', [UserController::class, 'toggleWatchedEpisode']);
 });

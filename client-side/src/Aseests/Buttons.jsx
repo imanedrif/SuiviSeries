@@ -1,10 +1,17 @@
 import React from "react";
 
-export const PrimaryButtons = ({ iconLeft, text, type }) => {
+export const PrimaryButtons = ({
+  iconLeft,
+  text,
+  type,
+  className,
+  onClick,
+}) => {
   return (
     <button
+      onClick={onClick}
       type={type}
-      className=" gap-2 text-white px-4 md:px-8 py-2 md:py-2 bg-red flex justify-center border-red border-2 text-base md:text-lg rounded-lg items-center"
+      className={`gap-2 text-white px-4 md:px-8 py-2 md:py-2 bg-red flex justify-center border-red border-2 text-base md:text-lg rounded-lg items-center ${className}`}
     >
       {iconLeft}
       {text}
