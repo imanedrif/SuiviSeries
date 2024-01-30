@@ -12,6 +12,7 @@ class Episode extends Model
     protected $fillable = [
         'tmdb_episode_id',
         'series_id',
+        'season'
     ];
 
     public function users()

@@ -52,13 +52,15 @@ class UserController extends Controller
             ]);
         }
     }
-    public function getWatchedEpisodes(Request $request, $serieId)
+
+    public function getWatchedEpisodes(Request $request, $serieId, $seasonNumber)
     {
         $user = $request->user();
 
         $watchedEpisodeIds = Episode::join('episode_regarde', 'episode_regarde.episode_id', '=', 'episodes.id')
             ->where('episode_regarde.user_id', $user->id)
             ->where('episodes.series_id', $serieId)
+            ->where('episodes.season', $seasonNumber) // Add condition for season
             ->pluck('episodes.tmdb_episode_id');
 
         return response()->json([
@@ -66,6 +68,7 @@ class UserController extends Controller
             'watchedEpisodes' => $watchedEpisodeIds
         ]);
     }
+
 
 
 
@@ -101,17 +104,19 @@ class UserController extends Controller
             ], 201);
         }
     }
-    public function toggleWatchedEpisode(Request $request, $episodeId)
+    public function toggleWatchedEpisode(Request $request, $episodeId, $seasonNumber)
     {
         $user = $request->user();
-
-        // Use firstOrCreate to either get the existing episode or create a new one
+        // Find or create the episode with the season number
         $episode = Episode::firstOrCreate(
-            ['tmdb_episode_id' => $request->tmdb_episode_id, 'series_id' => $request->series_id],
+            [
+                'tmdb_episode_id' => $episodeId,
+                'series_id' => $request->series_id,
+                'season' => $seasonNumber
+            ]
         );
 
-
-        // Now toggle the watched state
+        // Toggle the watched status
         if ($user->watchedEpisodes()->where('episode_id', $episode->id)->exists()) {
             $user->watchedEpisodes()->detach($episode->id);
             $action = 'removed';
@@ -127,6 +132,7 @@ class UserController extends Controller
             'episode' => $episode,
         ]);
     }
+
 
 
 }
