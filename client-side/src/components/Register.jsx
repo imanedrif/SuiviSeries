@@ -21,7 +21,7 @@ const Register = () => {
       sessionStorage.setItem("token", data.token);
       sessionStorage.setItem("user", JSON.stringify(data.user));
       sessionStorage.setItem("isAuth", true);
-      window.location.href = "/home";
+      window.location.href = "/";
     } else {
       console.log("error");
       alert("L'utilisateur existe déjà");

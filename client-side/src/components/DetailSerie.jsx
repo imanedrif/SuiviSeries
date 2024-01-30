@@ -15,6 +15,7 @@ const DetailSerie = () => {
   const [checkedEps, setCheckedEps] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
   const [isFav, setIsFav] = useState(false);
+  const [seasonNumber, setSeasonNumber] = useState(1);
 
   useEffect(() => {
     let user = JSON.parse(sessionStorage.getItem("user"));
@@ -22,17 +23,20 @@ const DetailSerie = () => {
     let serieId = id;
     let token = sessionStorage.getItem("token");
     axios
-      .get(`http://localhost:8000/api/user/watched-episodes/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get(
+        `http://localhost:8000/api/user/watched-episodes/${serieId}/${seasonNumber}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => {
         console.log("watched eps : ", res.data.watchedEpisodes);
         setCheckedEps(res.data.watchedEpisodes);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [seasonNumber]);
 
   useEffect(() => {
     let user = JSON.parse(sessionStorage.getItem("user"));
@@ -40,11 +44,14 @@ const DetailSerie = () => {
     let serieId = id;
     let token = sessionStorage.getItem("token");
     axios
-      .get(`http://localhost:8000/api/user/favorite-series/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get(
+        `http://localhost:8000/api/user/favorite-series/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => {
         console.log("res", res);
 
@@ -59,17 +66,21 @@ const DetailSerie = () => {
   const addToWatchedEpisodes = (tmdbEpisodeId, seriesId) => {
     let user = JSON.parse(sessionStorage.getItem("user"));
     let token = sessionStorage.getItem("token");
-    if(checkedEps.includes(tmdbEpisodeId)){
+    if (checkedEps.includes(tmdbEpisodeId)) {
       setCheckedEps((prev) => prev.filter((ep) => ep !== tmdbEpisodeId));
-    }else{
+    } else {
       setCheckedEps((prev) => [...prev, tmdbEpisodeId]);
     }
+    console.log("tmdbId", tmdbEpisodeId);
+    console.log("seriesId", seriesId);
+    console.log("seasonNumber", seasonNumber);
     axios
       .post(
-        `http://localhost:8000/api/user/watched-episode/${tmdbEpisodeId}`,
+        `http://localhost:8000/api/user/watched-episode/${tmdbEpisodeId}/${seasonNumber}`,
         {
           tmdb_episode_id: tmdbEpisodeId,
           series_id: seriesId,
+          season: seasonNumber, // Pass seasonNumber to the request
         },
         {
           headers: {
@@ -125,12 +136,6 @@ const DetailSerie = () => {
       .catch((err) => console.log(err));
   };
 
-  const handleCheck = (epNumber) => {
-    setCheckedEps((prev) => ({
-      ...prev,
-      [epNumber]: !prev[epNumber],
-    }));
-  };
   async function getSerieRecommendations() {
     try {
       let resp = await axios.get(
@@ -155,6 +160,7 @@ const DetailSerie = () => {
   }
 
   const getSeasonEPS = async (season) => {
+    setSeasonNumber(season);
     try {
       let resp = await axios.get(
         `https://api.themoviedb.org/3/tv/${id}/season/${season}?api_key=5bf89b1ac4dec1f2a3dacb6b4b926527`
@@ -215,9 +221,7 @@ const DetailSerie = () => {
           </div>
           <div className="border w-fit p-3 rounded text-yellow-500 border-yellow-500">
             <span className="font-bold">
-              {
-                details?.vote_average.toFixed(1)
-              }
+              {details?.vote_average.toFixed(1)}
             </span>
           </div>
           <div className="flex flex-col items-center md:items-start gap-1">
@@ -248,8 +252,9 @@ const DetailSerie = () => {
       <div className="grid grid-cols-4 lg:grid-cols-10 bg-zinc-300 bg-opacity-10 container m-auto p-6 gap-6 items-start justify-start rounded-lg">
         {Eps.map((ep) => {
           return (
-            <div className=" flex  cursor-pointer flex-col px-6 py-3 items-center justify-start bg-purple-900 bg-opacity-20 border-2 border-purple-900 rounded-md"
-            onClick={() => addToWatchedEpisodes(ep.episode_number, id)}
+            <div
+              className=" flex  cursor-pointer flex-col px-6 py-3 items-center justify-start bg-purple-900 bg-opacity-20 border-2 border-purple-900 rounded-md"
+              onClick={() => addToWatchedEpisodes(ep.episode_number, id)}
             >
               <span className="font-bold text-lg">EP{ep.episode_number}</span>
               <Icon
